@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Coordinación de Parentalidad y Orientación Familiar. Ximena González — acompañamos a familias en proceso de reorganización.">
+  <title>Me Suena Familiar — Coordinación de Parentalidad</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Tokens de color (paleta de la imagen) ── */
+    :root {
+      --bg:       #EDEAE7;   /* gris cálido claro — fondo principal */
+      --bg-mid:   #E3E0DC;   /* un tono más oscuro — secciones alternadas */
+      --white:    #FFFFFF;
+      --ink:      #000000;   /* texto principal / botones */
+      --ink-soft: #3a3a3a;   /* texto secundario */
+      --border:   #D0CCC8;   /* bordes sutiles */
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── Tipografía ── */
+    .serif { font-family: 'Playfair Display', 'Times New Roman', serif; }
+    .serif-italic { font-family: 'Playfair Display', 'Times New Roman', serif; font-style: italic; }
+
+    /* ── Noise overlay ── */
+    .noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── Header ── */
+    #header-nav {
+      background: rgba(0,0,0,0.32);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s, box-shadow 0.4s;
+      border-radius: 2rem;
+    }
+    #header-nav.scrolled {
+      background: rgba(237,234,231,0.95);
+      backdrop-filter: blur(24px);
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+    }
+    #header-nav.scrolled .nav-link { color: var(--ink-soft); }
+    #header-nav.scrolled .nav-link:hover { color: var(--ink); }
+    #header-nav.scrolled #logo-img { filter: none; }
+    #header-nav.scrolled .header-cta { background: var(--ink); color: #fff; }
+
+    /* ── Botón pill negro ── */
+    .btn-pill {
+      position: relative; overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-pill:hover { transform: scale(1.03); }
+    .btn-pill .slide {
+      position: absolute; inset: 0; background: #222;
+      transform: translateY(101%);
+      transition: transform 0.3s cubic-bezier(0.65,0,0.35,1);
+      border-radius: inherit;
+    }
+    .btn-pill:hover .slide { transform: translateY(0); }
+    .btn-pill > span { position: relative; z-index: 1; display: flex; align-items: center; gap: 0.5rem; }
+
+    /* ── Botón outline ── */
+    .btn-outline {
+      border: 1px solid rgba(255,255,255,0.35);
+      transition: background 0.25s, border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.6); transform: scale(1.02); }
+    .btn-outline-dark {
+      border: 1px solid rgba(0,0,0,0.18);
+      transition: background 0.25s, border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-outline-dark:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.35); transform: scale(1.02); }
+
+    /* ── Hero ── */
+    .hero { height: 100dvh; min-height: 640px; position: relative; overflow: hidden; }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('hero_new.jpg');
+      background-size: cover; background-position: center center;
+      transform: scale(1.06); will-change: transform;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(165deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.20) 50%, rgba(0,0,0,0.72) 100%);
+    }
+    /* Gradiente específico para proteger el header */
+    .hero-header-shadow {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 140px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%);
+      pointer-events: none;
+    }
+
+    /* ── Divider ── */
+    .divider { width: 40px; height: 1px; background: var(--ink); }
+    .divider-white { width: 40px; height: 1px; background: rgba(255,255,255,0.6); }
+
+    /* ── Scroll reveals ── */
+    .reveal       { opacity: 0; transform: translateY(32px); }
+    .reveal-left  { opacity: 0; transform: translateX(-44px); }
+    .reveal-right { opacity: 0; transform: translateX(44px); }
+
+    /* ── Pulse dot ── */
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+    .pulse { animation: pulse 2.5s ease-in-out infinite; }
+
+    /* ── Skeleton loader ── */
+    @keyframes skeleton { 0%,100%{opacity:1} 50%{opacity:0.45} }
+
+    /* ── WA float ── */
+    .wa-float {
+      position: fixed; bottom: 1.75rem; right: 1.75rem; z-index: 998;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #25D366; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(37,211,102,.35); text-decoration: none;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+    }
+    .wa-float:hover { transform: scale(1.12); box-shadow: 0 8px 36px rgba(37,211,102,.5); }
+
+    /* ── Cards ── */
+    .card { border-radius: 1.5rem; transition: transform .3s ease, box-shadow .3s ease; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 20px 56px rgba(0,0,0,.09); }
+
+    /* ── Pain point rows ── */
+    .pain-row { border-bottom: 1px solid var(--border); transition: background .2s; }
+    .pain-row:hover { background: rgba(0,0,0,0.025); }
+
+    /* ── Proceso step ── */
+    .step-card { border-radius: 2rem; transition: transform .25s ease, box-shadow .25s ease; }
+    .step-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.08); }
+
+    /* ── Article card ── */
+    .article-card {
+      border-radius: 1.5rem;
+      border: 1px solid var(--border);
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s;
+      background: var(--white);
+      text-decoration: none; display: block;
+    }
+    .article-card:hover { transform: translateY(-5px); box-shadow: 0 20px 56px rgba(0,0,0,.08); border-color: rgba(0,0,0,.25); }
+
+    /* ── Stat ── */
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+    /* ── Tag ── */
+    .tag { display: inline-block; border: 1px solid var(--border); border-radius: 99px; font-size: 11px; padding: 4px 14px; color: var(--ink-soft); font-weight: 500; }
+  </style>
+</head>
+
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- WA float -->
+  <a href="https://wa.me/5491130217925?text=Hola%20Ximena%2C%20me%20gustar%C3%ADa%20agendar%20una%20llamada%20de%20consulta."
+     class="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+    <nav id="header-nav" class="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+
+      <a href="#" class="flex items-center no-underline"></a>
+
+      <div class="hidden md:flex items-center gap-7">
+        <a href="#servicio"   class="nav-link text-white/70 text-xs font-semibold tracking-widest uppercase hover:text-white transition-colors">El servicio</a>
+        <a href="#proceso"    class="nav-link text-white/70 text-xs font-semibold tracking-widest uppercase hover:text-white transition-colors">Proceso</a>
+        <a href="#ximena"     class="nav-link text-white/70 text-xs font-semibold tracking-widest uppercase hover:text-white transition-colors">Quién soy</a>
+        <a href="#articulos"  class="nav-link text-white/70 text-xs font-semibold tracking-widest uppercase hover:text-white transition-colors">Artículos</a>
+        <a href="#consultas"  class="nav-link text-white/70 text-xs font-semibold tracking-widest uppercase hover:text-white transition-colors">Consultas</a>
+      </div>
+
+      <a href="https://wa.me/5491130217925?text=Hola%20Ximena%2C%20me%20gustar%C3%ADa%20agendar%20una%20llamada%20de%20consulta."
+         target="_blank" rel="noopener"
+         class="header-cta btn-pill bg-white text-black text-xs font-bold px-5 py-2.5 rounded-[1.5rem] tracking-wide uppercase">
+        <div class="slide" style="background:#e0dedd;"></div>
+        <span>Agendar llamada</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       HERO
+  ══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-header-shadow"></div>
+
+    <div class="relative z-10 h-full flex flex-col justify-end pb-16 md:pb-28 px-6">
+      <div class="max-w-6xl mx-auto w-full">
+
+        <div id="hero-eye" class="flex items-center gap-3 mb-5">
+          <span class="w-6 h-px bg-white/50"></span>
+          <span class="text-white/55 text-xs font-semibold tracking-[0.22em] uppercase">Coordinación de Parentalidad · Orientación Familiar</span>
+        </div>
+
+        <h1 id="hero-title" class="text-white max-w-5xl">
+          <span class="block font-bold text-4xl md:text-[3.5rem] lg:text-[5rem] leading-[1.04] tracking-tight" style="font-family:Montserrat,sans-serif;">
+            Cuando los padres<br>no se ponen de acuerdo,
+          </span>
+          <span class="serif-italic block text-4xl md:text-[3.5rem] lg:text-[5.25rem] leading-[1.06] mt-1" style="color:rgba(237,234,231,0.95);">
+            los hijos lo sienten.
+          </span>
+        </h1>
+
+        <p id="hero-sub" class="text-white/60 text-base md:text-lg max-w-lg mt-7 font-light leading-relaxed">
+          Acompañamos a familias en proceso de reorganización para ordenar la comunicación entre progenitores y construir acuerdos que protejan a sus hijos.
+        </p>
+
+        <div id="hero-ctas" class="flex flex-col sm:flex-row gap-4 mt-9">
+          <a href="https://wa.me/5491130217925?text=Hola%20Ximena%2C%20me%20gustar%C3%ADa%20agendar%20una%20llamada%20de%20consulta%20gratuita."
+             target="_blank" rel="noopener"
+             class="btn-pill bg-white text-black font-bold px-8 py-4 rounded-[2rem] w-fit text-sm tracking-wide uppercase">
+            <div class="slide" style="background:#e0dedd;"></div>
+            <span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Agendá tu llamada gratuita
+            </span>
+          </a>
+
+          <a href="#servicio" class="btn-outline text-white/80 font-medium px-8 py-4 rounded-[2rem] inline-flex items-center gap-2 w-fit text-sm tracking-wide">
+            Conocé el servicio
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+          </a>
+        </div>
+
+        <div id="hero-trust" class="flex flex-wrap items-center gap-x-7 gap-y-2 mt-10 pt-7" style="border-top:1px solid rgba(255,255,255,0.10);">
+          <div class="flex items-center gap-2">
+            <span class="pulse w-1.5 h-1.5 rounded-full bg-white/70 flex-shrink-0"></span>
+            <span class="text-white/40 text-xs tracking-wide">Presencial y virtual</span>
+          </div>
+          <div class="w-px h-3 hidden sm:block" style="background:rgba(255,255,255,0.12)"></div>
+          <span class="text-white/40 text-xs tracking-wide">Casos judicializados y no judicializados</span>
+          <div class="w-px h-3 hidden sm:block" style="background:rgba(255,255,255,0.12)"></div>
+          <span class="text-white/40 text-xs tracking-wide hidden sm:block">CABA y GBA</span>
+          <div class="w-px h-3 hidden md:block" style="background:rgba(255,255,255,0.12)"></div>
+          <span class="text-white/40 text-xs tracking-wide hidden md:block">Equipo interdisciplinario</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       RECONOCIMIENTO
+  ══════════════════════════════════════ -->
+  <section style="background:var(--bg); padding:6rem 1.5rem;">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="grid md:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+        <div class="reveal">
+          <div class="divider mb-7"></div>
+          <h2 class="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight mb-6" style="color:var(--ink);">
+            ¿Te reconocés<br>en alguna de<br>estas situaciones?
+          </h2>
+          <p class="text-base md:text-lg leading-relaxed mb-4" style="color:var(--ink-soft);">
+            La separación ya está. Pero la comunicación con el otro progenitor sigue siendo un campo de batalla. Y en el medio, los chicos.
+          </p>
+          <p class="text-base leading-relaxed" style="color:var(--ink-soft);">
+            No necesitás esperar a que el conflicto escale para buscar ayuda. La Coordinación de Parentalidad existe para esto.
+          </p>
+        </div>
+
+        <!-- Pain points como lista editorial -->
+        <div style="border-top:1px solid var(--border);">
+          <div class="pain-row reveal flex items-start gap-5 py-5 px-2">
+            <span class="text-xs font-bold tracking-widest" style="color:var(--border); min-width:28px; padding-top:3px;">01</span>
+            <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Cada mensaje con el otro padre termina en conflicto, en silencio, o en malentendidos.</p>
+          </div>
+          <div class="pain-row reveal flex items-start gap-5 py-5 px-2">
+            <span class="text-xs font-bold tracking-widest" style="color:var(--border); min-width:28px; padding-top:3px;">02</span>
+            <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Estás en un proceso judicial que no resuelve la dinámica cotidiana con tus hijos.</p>
+          </div>
+          <div class="pain-row reveal flex items-start gap-5 py-5 px-2">
+            <span class="text-xs font-bold tracking-widest" style="color:var(--border); min-width:28px; padding-top:3px;">03</span>
+            <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Tus hijos están en el medio — reciben mensajes, presiones o silencios que no les corresponden.</p>
+          </div>
+          <div class="pain-row reveal flex items-start gap-5 py-5 px-2">
+            <span class="text-xs font-bold tracking-widest" style="color:var(--border); min-width:28px; padding-top:3px;">04</span>
+            <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Los cambios de régimen, los permisos o los gastos compartidos se vuelven batallas eternas.</p>
+          </div>
+          <div class="pain-row reveal flex items-start gap-5 py-5 px-2">
+            <span class="text-xs font-bold tracking-widest" style="color:var(--border); min-width:28px; padding-top:3px;">05</span>
+            <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Querés ordenar la co-parentalidad antes de que el conflicto llegue a la Justicia.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quote -->
+      <div class="reveal mt-16 md:mt-20 rounded-[2rem] p-10 md:p-14" style="background:var(--ink);">
+
+        <!-- Marca tipográfica -->
+        <div style="margin-bottom:2rem;">
+          <p style="font-family:Montserrat,sans-serif; font-size:1.1rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:rgba(237,234,231,0.5); line-height:1; margin-bottom:.25rem;">ME SUENA</p>
+          <p class="serif" style="font-size:clamp(3rem,8vw,5.5rem); font-weight:700; line-height:.95; color:var(--bg);">familiar.</p>
+        </div>
+
+        <!-- Párrafo 1 -->
+        <p style="font-family:Montserrat,sans-serif; font-size:1rem; line-height:1.7; color:rgba(237,234,231,0.75); margin-bottom:1.5rem;">
+          Un espacio dedicado a la <strong style="color:var(--bg); font-weight:700;">familia</strong> y al <strong style="color:var(--bg); font-weight:700;">cuidado de las infancias</strong>.<br>
+          Donde las historias familiares no se juzgan, se comprenden.
+        </p>
+
+        <!-- Párrafo 2 -->
+        <p style="font-family:Montserrat,sans-serif; font-size:1rem; line-height:1.7; color:rgba(237,234,231,0.75);">
+          Acompañamos a familias, incluso cuando la situación ya escaló o se volvió difícil de manejar, a <strong style="color:var(--bg); font-weight:700;">reconstruir su comunicación</strong> y salir de dinámicas que perpetúan el conflicto.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SERVICIO / FEATURES
+  ══════════════════════════════════════ -->
+  <section id="servicio" style="background:var(--bg-mid); padding:6rem 1.5rem;">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="text-center mb-14 reveal">
+        <div class="divider mx-auto mb-7"></div>
+        <h2 class="font-bold text-3xl md:text-5xl leading-tight" style="color:var(--ink);">
+          Un servicio diseñado<br>para familias reales
+        </h2>
+        <p class="text-base md:text-lg mt-5 max-w-xl mx-auto leading-relaxed" style="color:var(--ink-soft);">
+          No es terapia de pareja. No es mediación. Es un acompañamiento especializado en la co-parentalidad, con foco en el bienestar de los niños, niñas y adolescentes.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+
+        <div class="card reveal bg-white p-8">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center mb-6" style="border:1px solid var(--border);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="font-bold text-base mb-3 tracking-wide" style="color:var(--ink);">Acompañamiento clínico especializado</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">
+            Sesiones individuales con cada progenitor, encuentros conjuntos cuando es posible, y participación de los hijos cuando el equipo lo evalúa pertinente.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-6 pt-5" style="border-top:1px solid var(--border);">
+            <span class="tag">Sesiones individuales</span>
+            <span class="tag">Sesiones conjuntas</span>
+            <span class="tag">Con NNyA</span>
+          </div>
+        </div>
+
+        <!-- Destacada — fondo negro -->
+        <div class="card reveal p-8 text-white" style="background:var(--ink);">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center mb-6" style="border:1px solid rgba(255,255,255,0.2);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3 class="font-bold text-base mb-3 tracking-wide">Supervisión de la comunicación interparental</h3>
+          <p class="text-sm leading-relaxed" style="color:rgba(237,234,231,0.72);">
+            Intervenimos activamente en situaciones de escalada. Supervisamos la comunicación por WhatsApp o mediante Our Family Wizard, aprobada por tribunales en EE.UU.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-6 pt-5" style="border-top:1px solid rgba(255,255,255,0.12);">
+            <span style="border:1px solid rgba(255,255,255,0.2); border-radius:99px; font-size:11px; padding:4px 14px; color:rgba(255,255,255,0.7); font-weight:500;">WhatsApp supervisado</span>
+            <span style="border:1px solid rgba(255,255,255,0.2); border-radius:99px; font-size:11px; padding:4px 14px; color:rgba(255,255,255,0.7); font-weight:500;">Our Family Wizard</span>
+          </div>
+        </div>
+
+        <div class="card reveal bg-white p-8">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center mb-6" style="border:1px solid var(--border);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 class="font-bold text-base mb-3 tracking-wide" style="color:var(--ink);">Adaptado al nivel de conflicto de cada familia</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">
+            El servicio se calibra según el nivel de conflicto evaluado: desde situaciones preventivas hasta alta litigiosidad o violencia simbólica.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-6 pt-5" style="border-top:1px solid var(--border);">
+            <span class="tag">Conflicto bajo</span>
+            <span class="tag">Moderado</span>
+            <span class="tag">Alta conflictividad</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PROCESO
+  ══════════════════════════════════════ -->
+  <section id="proceso" style="background:var(--ink); padding:6rem 1.5rem;">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="mb-14 reveal">
+        <div class="divider-white mb-7"></div>
+        <h2 class="font-bold text-3xl md:text-5xl leading-tight text-white">Cómo funciona<br>el proceso</h2>
+        <p class="text-base md:text-lg mt-5 max-w-md leading-relaxed" style="color:rgba(237,234,231,0.5);">
+          Un camino claro en tres etapas, diseñado para que la familia pueda avanzar a su propio ritmo.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-7">
+
+        <div class="step-card reveal p-8 text-white" style="border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.04);">
+          <span class="serif font-bold block mb-6" style="font-size:3.5rem; line-height:1; color:rgba(255,255,255,0.12);">01</span>
+          <h3 class="font-bold text-base mb-3 tracking-wide">Fase diagnóstica</h3>
+          <p class="text-sm leading-relaxed" style="color:rgba(237,234,231,0.55);">Dos sesiones individuales por progenitor para evaluar el caso y diseñar el plan. Sin compromiso de continuar.</p>
+          <p class="mt-5 text-xs font-semibold tracking-widest uppercase" style="color:rgba(237,234,231,0.35);">2 sesiones / progenitor</p>
+        </div>
+
+        <!-- Destacado -->
+        <div class="step-card reveal p-8" style="background:var(--bg); color:var(--ink);">
+          <span class="serif font-bold block mb-6" style="font-size:3.5rem; line-height:1; color:var(--border);">02</span>
+          <h3 class="font-bold text-base mb-3 tracking-wide">Plan de trabajo mensual</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--ink-soft);">Hasta 4 sesiones por progenitor, supervisión continua de la comunicación y coordinación con profesionales del caso.</p>
+          <p class="mt-5 text-xs font-semibold tracking-widest uppercase" style="color:var(--border);">Abono mensual · Presencial o virtual</p>
+        </div>
+
+        <div class="step-card reveal p-8 text-white" style="border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.04);">
+          <span class="serif font-bold block mb-6" style="font-size:3.5rem; line-height:1; color:rgba(255,255,255,0.12);">03</span>
+          <h3 class="font-bold text-base mb-3 tracking-wide">Plan de parentalidad</h3>
+          <p class="text-sm leading-relaxed" style="color:rgba(237,234,231,0.55);">Acuerdos concretos: régimen de comunicación, calendario compartido, criterios de decisión conjunta.</p>
+          <p class="mt-5 text-xs font-semibold tracking-widest uppercase" style="color:rgba(237,234,231,0.35);">Acuerdos que se sostienen</p>
+        </div>
+
+      </div>
+
+      <!-- Nota articulación -->
+      <div class="reveal flex items-start gap-5 rounded-[1.5rem] p-6" style="border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03);">
+        <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style="background:rgba(255,255,255,0.15);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <p class="font-semibold text-sm text-white mb-1">Articulación con profesionales externos — sin costo adicional</p>
+          <p class="text-sm leading-relaxed" style="color:rgba(237,234,231,0.45);">La coordinación con abogados, terapeutas y docentes del caso forma parte del servicio.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       OFW
+  ══════════════════════════════════════ -->
+  <section style="background:var(--bg); padding:6rem 1.5rem; overflow:hidden;">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-14 lg:gap-20 items-center">
+
+        <div class="reveal">
+          <div class="divider mb-7"></div>
+          <span class="text-xs font-bold tracking-[0.22em] uppercase" style="color:var(--ink-soft);">Diferencial único en CABA</span>
+          <h2 class="font-bold text-3xl md:text-4xl lg:text-[2.75rem] leading-tight mt-3 mb-6" style="color:var(--ink);">
+            Our Family Wizard:<br>
+            <span class="serif-italic">tecnología<br>al servicio de los hijos</span>
+          </h2>
+          <p class="text-base leading-relaxed mb-8" style="color:var(--ink-soft);">
+            Incorporamos Our Family Wizard — la app de co-parentalidad más utilizada a nivel mundial, aprobada por tribunales en 50 estados de EE.UU.
+          </p>
+
+          <div class="space-y-5">
+            <div class="flex items-start gap-4" style="border-bottom:1px solid var(--border); padding-bottom:1.25rem;">
+              <span class="text-xs font-bold mt-1" style="color:var(--border); min-width:1.5rem;">—</span>
+              <div>
+                <p class="font-semibold text-sm" style="color:var(--ink);">Mensajería con registro inalterable</p>
+                <p class="text-sm mt-0.5 leading-relaxed" style="color:var(--ink-soft);">Marca de tiempo y confirmación de primera lectura. Admisible en juicio.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4" style="border-bottom:1px solid var(--border); padding-bottom:1.25rem;">
+              <span class="text-xs font-bold mt-1" style="color:var(--border); min-width:1.5rem;">—</span>
+              <div>
+                <p class="font-semibold text-sm" style="color:var(--ink);">Calendario compartido de custodia</p>
+                <p class="text-sm mt-0.5 leading-relaxed" style="color:var(--ink-soft);">Solicitudes de cambio en un clic, sin negociaciones por WhatsApp.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4" style="border-bottom:1px solid var(--border); padding-bottom:1.25rem;">
+              <span class="text-xs font-bold mt-1" style="color:var(--border); min-width:1.5rem;">—</span>
+              <div>
+                <p class="font-semibold text-sm" style="color:var(--ink);">ToneMeter™</p>
+                <p class="text-sm mt-0.5 leading-relaxed" style="color:var(--ink-soft);">Detecta lenguaje emocionalmente cargado antes de enviar el mensaje.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="text-xs font-bold mt-1" style="color:var(--border); min-width:1.5rem;">—</span>
+              <div>
+                <p class="font-semibold text-sm" style="color:var(--ink);">Registro de gastos compartidos</p>
+                <p class="text-sm mt-0.5 leading-relaxed" style="color:var(--ink-soft);">Seguimiento de reembolsos vinculados a los hijos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock UI — minimalista B&W -->
+        <div class="reveal-right">
+          <div class="rounded-[2.5rem] p-8" style="background:var(--ink); color:white;">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.12);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div>
+                <p class="font-bold text-sm tracking-wide">Our Family Wizard</p>
+                <p class="text-xs" style="color:rgba(255,255,255,0.38);">Vista del equipo coordinador</p>
+              </div>
+            </div>
+
+            <div class="rounded-[1rem] p-4 mb-3" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);">
+              <div class="flex justify-between mb-2">
+                <span class="text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.35);">Progenitor A</span>
+                <span class="text-xs" style="color:rgba(255,255,255,0.38);">✓ Leído 09:41</span>
+              </div>
+              <p class="text-sm" style="color:rgba(237,234,231,0.80);">"¿Podés llevar a Mateo al partido del sábado a las 10?"</p>
+            </div>
+
+            <div class="rounded-[1rem] p-4 mb-5" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);">
+              <div class="flex justify-between mb-2">
+                <span class="text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.35);">Progenitor B</span>
+                <span class="text-xs" style="color:rgba(255,255,255,0.38);">✓✓ 09:55</span>
+              </div>
+              <p class="text-sm" style="color:rgba(237,234,231,0.80);">"Sí, confirmo. ¿Quién lo busca después?"</p>
+            </div>
+
+            <!-- Calendario -->
+            <div class="rounded-[1rem] p-4" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);">
+              <div class="flex justify-between mb-3">
+                <span class="text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.35);">Calendario · Mayo</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center;">
+                <span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">L</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">M</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">M</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">J</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">V</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">S</span><span style="font-size:10px;color:rgba(255,255,255,0.25);padding:4px 0">D</span>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">1</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">2</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">3</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">4</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">5</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(237,234,231,0.15);color:rgba(237,234,231,0.9);font-weight:700;margin:auto;">6</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(237,234,231,0.15);color:rgba(237,234,231,0.9);font-weight:700;margin:auto;">7</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">8</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">9</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">10</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">11</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4);margin:auto;">12</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(237,234,231,0.15);color:rgba(237,234,231,0.9);font-weight:700;margin:auto;">13</div>
+                <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:rgba(237,234,231,0.15);color:rgba(237,234,231,0.9);font-weight:700;margin:auto;">14</div>
+              </div>
+            </div>
+
+            <p class="text-xs text-center mt-5" style="color:rgba(255,255,255,0.22);">El equipo accede como observador · Sin cargo adicional</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       QUIÉN SOY
+  ══════════════════════════════════════ -->
+  <section id="ximena" style="background:var(--bg-mid); padding:6rem 1.5rem;">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="grid md:grid-cols-5 gap-12 lg:gap-20 items-start">
+
+        <!-- Foto + LinkedIn -->
+        <div class="md:col-span-2 reveal">
+          <div class="relative max-w-sm mx-auto md:max-w-none">
+
+            <!-- Foto real -->
+            <div class="overflow-hidden" style="border-radius:2.5rem; aspect-ratio:3/4;">
+              <img src="foto perfil.png"
+                   alt="Ximena González — Coordinadora de Parentalidad"
+                   style="width:100%; height:100%; object-fit:cover; object-position:center top;">
+            </div>
+
+            <!-- Badge nombre -->
+            <div class="absolute -bottom-5 -right-3 rounded-[1.25rem] px-5 py-4 shadow-xl" style="background:var(--ink);">
+              <p class="serif font-bold text-white text-lg leading-none">XG</p>
+              <p class="text-xs mt-1 leading-snug" style="color:rgba(255,255,255,0.6);">Coordinación<br>de Parentalidad</p>
+            </div>
+          </div>
+
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/ximena-gonzalez-a0a78094"
+             target="_blank" rel="noopener"
+             class="flex items-center gap-4 no-underline mt-10 rounded-[1.5rem] p-5 transition-all hover:shadow-md"
+             style="background:white; border:1px solid var(--border);">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background:#0A66C2;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm" style="color:var(--ink);">Ver perfil en LinkedIn</p>
+              <p class="text-xs mt-0.5" style="color:var(--ink-soft);">Artículos · Experiencia · Formación</p>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+          </a>
+        </div>
+
+        <!-- Bio -->
+        <div class="md:col-span-3 reveal">
+          <div class="divider mb-7"></div>
+          <span class="text-xs font-bold tracking-[0.22em] uppercase" style="color:var(--ink-soft);">Quién soy</span>
+
+          <h2 class="font-bold text-4xl md:text-5xl leading-tight mt-3 mb-5" style="color:var(--ink);">
+            Ximena González
+          </h2>
+
+          <p class="serif-italic text-xl md:text-2xl leading-snug mb-8" style="color:var(--ink-soft);">
+            "Las historias familiares no se juzgan — se comprenden."
+          </p>
+
+          <div class="space-y-5 text-base leading-relaxed" style="color:var(--ink-soft);">
+            <p>
+              Soy Ximena Gonzalez (34), coordinadora de parentalidad y orientadora familiar. Trabajo acompañando a familias en conflicto, especialmente cuando la comunicación se encuentra deteriorada y los acuerdos se vuelven difíciles de sostener.
+            </p>
+            <p>
+              Mi enfoque es sistémico e interdisciplinario, lo que implica comprender a la familia como un sistema donde cada vínculo impacta en el otro. Intervengo articulando con otros profesionales y ayudando a construir nuevas formas de organización familiar, más claras y sostenibles en el tiempo.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2.5 mt-8">
+            <span class="tag">Coordinación de Parentalidad</span>
+            <span class="tag">Orientación Familiar</span>
+            <span class="tag">Alta conflictividad</span>
+            <span class="tag">Enfoque sistémico</span>
+            <span class="tag">AFCC Guidelines</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-5 mt-10 pt-8" style="border-top:1px solid var(--border);">
+            <div>
+              <p class="stat-num font-bold" style="font-size:2.25rem; color:var(--ink);">3</p>
+              <p class="text-xs mt-1 leading-snug" style="color:var(--ink-soft);">Niveles de conflicto atendidos</p>
+            </div>
+            <div>
+              <p class="stat-num font-bold" style="font-size:2.25rem; color:var(--ink);">2</p>
+              <p class="text-xs mt-1 leading-snug" style="color:var(--ink-soft);">Modalidades: presencial y virtual</p>
+            </div>
+            <div>
+              <p class="stat-num font-bold" style="font-size:2.25rem; color:var(--ink);">∞</p>
+              <p class="text-xs mt-1 leading-snug" style="color:var(--ink-soft);">Compromiso con el bienestar de NNyA</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULOS
+  ══════════════════════════════════════ -->
+  <section id="articulos" style="background:var(--bg); padding:6rem 1.5rem;">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 reveal">
+        <div>
+          <div class="divider mb-7"></div>
+          <h2 class="font-bold text-3xl md:text-5xl leading-tight" style="color:var(--ink);">
+            Artículos<br>y reflexiones
+          </h2>
+          <p class="text-base md:text-lg mt-4 max-w-lg leading-relaxed" style="color:var(--ink-soft);">
+            Escritura profesional sobre familia, vínculos y parentalidad. Todos los lunes, reflexiones y aportes junto a profesionales de la materia.
+          </p>
+        </div>
+        <a href="https://www.linkedin.com/in/ximena-gonzalez-a0a78094/recent-activity/articles/"
+           target="_blank" rel="noopener"
+           class="btn-pill flex-shrink-0 bg-black text-white font-bold px-6 py-3.5 rounded-[1.5rem] text-xs tracking-widest uppercase w-fit">
+          <div class="slide"></div>
+          <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            Ver todos
+          </span>
+        </a>
+      </div>
+
+      <!-- Grid renderizado dinámicamente desde articulos.json -->
+      <div id="articulos-grid" class="grid md:grid-cols-3 gap-5 mb-8">
+        <!-- Skeleton loaders mientras carga -->
+        <div class="article-card" style="pointer-events:none;">
+          <div style="height:200px; background:var(--bg-mid); border-radius:1.5rem 1.5rem 0 0; animation:skeleton 1.5s ease-in-out infinite;"></div>
+          <div class="p-7">
+            <div style="height:12px; width:60%; background:var(--bg-mid); border-radius:99px; margin-bottom:12px; animation:skeleton 1.5s ease-in-out infinite;"></div>
+            <div style="height:18px; width:90%; background:var(--bg-mid); border-radius:99px; margin-bottom:8px; animation:skeleton 1.5s ease-in-out infinite;"></div>
+            <div style="height:18px; width:75%; background:var(--bg-mid); border-radius:99px; animation:skeleton 1.5s ease-in-out infinite;"></div>
+          </div>
+        </div>
+        <div class="article-card" style="pointer-events:none;">
+          <div style="height:200px; background:var(--bg-mid); border-radius:1.5rem 1.5rem 0 0; animation:skeleton 1.5s ease-in-out .2s infinite;"></div>
+          <div class="p-7">
+            <div style="height:12px; width:50%; background:var(--bg-mid); border-radius:99px; margin-bottom:12px; animation:skeleton 1.5s ease-in-out .2s infinite;"></div>
+            <div style="height:18px; width:85%; background:var(--bg-mid); border-radius:99px; margin-bottom:8px; animation:skeleton 1.5s ease-in-out .2s infinite;"></div>
+            <div style="height:18px; width:70%; background:var(--bg-mid); border-radius:99px; animation:skeleton 1.5s ease-in-out .2s infinite;"></div>
+          </div>
+        </div>
+        <div class="article-card" style="pointer-events:none;">
+          <div style="height:200px; background:var(--bg-mid); border-radius:1.5rem 1.5rem 0 0; animation:skeleton 1.5s ease-in-out .4s infinite;"></div>
+          <div class="p-7">
+            <div style="height:12px; width:55%; background:var(--bg-mid); border-radius:99px; margin-bottom:12px; animation:skeleton 1.5s ease-in-out .4s infinite;"></div>
+            <div style="height:18px; width:80%; background:var(--bg-mid); border-radius:99px; margin-bottom:8px; animation:skeleton 1.5s ease-in-out .4s infinite;"></div>
+            <div style="height:18px; width:65%; background:var(--bg-mid); border-radius:99px; animation:skeleton 1.5s ease-in-out .4s infinite;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banner LinkedIn -->
+      <div class="reveal rounded-[2rem] p-8 md:p-10 flex flex-col md:flex-row items-center gap-7" style="background:var(--ink);">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style="background:#0A66C2;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <p class="font-bold text-white text-base">Todos los lunes en LinkedIn</p>
+          <p class="text-sm mt-1 leading-relaxed" style="color:rgba(237,234,231,0.5);">Reflexiones y aportes sobre Coordinación de Parentalidad junto a profesionales de la materia.</p>
+        </div>
+        <a href="https://www.linkedin.com/in/ximena-gonzalez-a0a78094/recent-activity/articles/"
+           target="_blank" rel="noopener"
+           class="btn-pill bg-white font-bold text-xs px-7 py-3.5 rounded-[1.5rem] flex-shrink-0 tracking-widest uppercase"
+           style="color:var(--ink);">
+          <div class="slide" style="background:var(--bg-mid);"></div>
+          <span>Ver artículos</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CTA FINAL
+  ══════════════════════════════════════ -->
+  <section style="background:var(--ink); padding:6rem 1.5rem 7rem; position:relative; overflow:hidden;">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 25% 70%, rgba(237,234,231,0.04) 0%, transparent 55%), radial-gradient(ellipse at 78% 20%, rgba(237,234,231,0.03) 0%, transparent 50%);"></div>
+
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+
+      <div class="divider-white mx-auto mb-10 reveal"></div>
+
+      <h2 class="reveal font-bold text-white leading-[1.03] tracking-tight" style="font-size:clamp(2.5rem,7vw,5.5rem);">
+        El primer paso<br>
+        <span class="serif-italic" style="color:rgba(237,234,231,0.80);">es una conversación.</span>
+      </h2>
+
+      <p class="reveal text-lg md:text-xl max-w-lg mx-auto leading-relaxed mt-8 mb-12" style="color:rgba(237,234,231,0.40);">
+        Una llamada gratuita de 20 minutos para entender si este servicio es lo que tu familia necesita. Sin compromiso.
+      </p>
+
+      <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-5 mb-14">
+
+        <a href="https://wa.me/5491130217925?text=Hola%20Ximena%2C%20me%20gustar%C3%ADa%20agendar%20una%20llamada%20de%20consulta%20gratuita%20de%2020%20minutos."
+           target="_blank" rel="noopener"
+           class="btn-pill bg-white font-bold px-10 py-5 rounded-[2rem] text-sm tracking-widest uppercase"
+           style="color:var(--ink);">
+          <div class="slide" style="background:var(--bg);"></div>
+          <span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Agendá tu llamada gratuita
+          </span>
+        </a>
+
+        <a href="mailto:mesuenafamiliar.podcast@gmail.com"
+           class="btn-outline font-medium text-sm px-8 py-5 rounded-[2rem] inline-flex items-center gap-2 tracking-wide"
+           style="color:rgba(237,234,231,0.50);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          mesuenafamiliar.podcast@gmail.com
+        </a>
+      </div>
+
+      <div class="reveal flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-10" style="border-top:1px solid rgba(255,255,255,0.06);">
+        <div class="flex items-center gap-2 text-xs" style="color:rgba(237,234,231,0.25);">
+          <span class="pulse w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:rgba(237,234,231,0.4);"></span>
+          Respuesta en menos de 24 horas
+        </div>
+        <div class="flex items-center gap-2 text-xs" style="color:rgba(237,234,231,0.25);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Confidencialidad garantizada
+        </div>
+        <div class="flex items-center gap-2 text-xs" style="color:rgba(237,234,231,0.25);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          CABA · Virtual disponible
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CONSULTAS
+  ══════════════════════════════════════ -->
+  <section id="consultas" style="background:var(--white); padding:6rem 1.5rem;">
+    <div class="max-w-2xl mx-auto">
+
+      <div class="reveal text-center mb-12">
+        <div class="divider mx-auto mb-8"></div>
+        <p style="font-size:.7rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:1rem;">Contacto</p>
+        <h2 class="font-bold leading-tight tracking-tight" style="font-size:clamp(2rem,5vw,3.5rem); color:var(--ink);">
+          ¿Tenés una consulta?
+        </h2>
+        <p class="mt-4 text-base leading-relaxed" style="color:var(--ink-soft); max-width:480px; margin:1rem auto 0;">
+          Completá el formulario y te respondo en menos de 24 horas.
+        </p>
+      </div>
+
+      <!-- Formulario -->
+      <form id="consulta-form" class="reveal" novalidate>
+        <div class="grid md:grid-cols-2 gap-5 mb-5">
+          <div>
+            <label class="form-label" for="cf-nombre">Nombre completo</label>
+            <input class="form-input" type="text" id="cf-nombre" name="nombre" placeholder="Tu nombre" required>
+          </div>
+          <div>
+            <label class="form-label" for="cf-email">Correo electrónico</label>
+            <input class="form-input" type="email" id="cf-email" name="email" placeholder="tu@email.com" required>
+          </div>
+        </div>
+        <div class="mb-5">
+          <label class="form-label" for="cf-telefono">Teléfono <span style="color:var(--border);">(opcional)</span></label>
+          <input class="form-input" type="tel" id="cf-telefono" name="telefono" placeholder="+54 9 11 0000-0000">
+        </div>
+        <div class="mb-7">
+          <label class="form-label" for="cf-mensaje">¿Sobre qué querés consultar?</label>
+          <textarea class="form-input" id="cf-mensaje" name="mensaje" rows="5" placeholder="Contame brevemente tu situación o lo que necesitás…" required style="resize:vertical; min-height:130px;"></textarea>
+        </div>
+
+        <!-- Estado del botón -->
+        <div id="form-error" style="display:none; color:#b00020; font-size:.82rem; font-weight:600; margin-bottom:1rem; padding:.75rem 1rem; background:#fff0f0; border-radius:.75rem; border:1px solid #f5c0c0;"></div>
+
+        <button type="submit" id="form-btn" class="btn-pill w-full font-bold text-sm tracking-widest uppercase py-5 rounded-[1.5rem]"
+          style="background:var(--ink); color:var(--bg); border:none; cursor:pointer; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+          <div class="slide" style="background:#222;"></div>
+          <span id="form-btn-text">Enviar consulta</span>
+        </button>
+      </form>
+
+      <!-- Mensaje de éxito -->
+      <div id="form-success" style="display:none; text-align:center; padding:3rem 2rem; border:1px solid var(--border); border-radius:2rem; background:var(--bg);">
+        <div style="width:52px; height:52px; background:var(--ink); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 class="font-bold text-xl mb-2" style="color:var(--ink);">¡Consulta enviada!</h3>
+        <p style="color:var(--ink-soft); font-size:.95rem; line-height:1.6;">Recibí tu mensaje. Te respondo en menos de 24 horas.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <style>
+    .form-label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: .5rem;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 1rem;
+      padding: .9rem 1.2rem;
+      font-family: Montserrat, sans-serif;
+      font-size: .92rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input::placeholder { color: #b0aca8; }
+    .form-input:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.07);
+    }
+  </style>
+
+  <script>
+  (function(){
+    const form = document.getElementById('consulta-form');
+    const btn  = document.getElementById('form-btn');
+    const btnTxt = document.getElementById('form-btn-text');
+    const errBox = document.getElementById('form-error');
+    const success = document.getElementById('form-success');
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      errBox.style.display = 'none';
+
+      // Validación básica
+      const nombre  = form.nombre.value.trim();
+      const email   = form.email.value.trim();
+      const mensaje = form.mensaje.value.trim();
+      if (!nombre || !email || !mensaje) {
+        errBox.textContent = 'Por favor completá nombre, email y mensaje.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btnTxt.textContent = 'Enviando…';
+
+      try {
+        const res = await fetch('https://formspree.io/f/mgoqkkpz', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, email, telefono: form.telefono.value.trim(), mensaje })
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          success.style.display = 'block';
+        } else {
+          throw new Error();
+        }
+      } catch(_) {
+        errBox.textContent = 'Hubo un problema al enviar. Podés escribirme directamente a mesuenafamiliar.podcast@gmail.com';
+        errBox.style.display = 'block';
+        btn.disabled = false;
+        btnTxt.textContent = 'Enviar consulta';
+      }
+    });
+  })();
+  </script>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer style="background:#000; border-top:1px solid rgba(255,255,255,0.04); padding:2.5rem 1.5rem;">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+
+      <a href="#" class="flex items-center no-underline"></a>
+
+      <p class="text-xs text-center leading-relaxed" style="color:rgba(255,255,255,0.22);">
+        Coordinación de Parentalidad · Orientación Familiar<br>
+        Ximena González · mesuenafamiliar.podcast@gmail.com
+      </p>
+
+      <div class="flex items-center gap-5">
+        <a href="https://www.instagram.com/mesuenafamiliar/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25);" class="hover:text-white transition-colors" aria-label="Instagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/ximena-gonzalez-a0a78094" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25);" class="hover:text-white transition-colors" aria-label="LinkedIn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://wa.me/5491130217925" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25);" class="hover:text-white transition-colors" aria-label="WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <a href="mailto:mesuenafamiliar.podcast@gmail.com" style="color:rgba(255,255,255,0.25);" class="hover:text-white transition-colors" aria-label="Email">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Carga dinámica de artículos desde articulos.json ── -->
+  <script>
+    // ─────────────────────────────────────────────────────
+    // CÓMO AGREGAR UN NUEVO ARTÍCULO:
+    // 1. Abrí el archivo web/articulos.json
+    // 2. Agregá un objeto al PRINCIPIO del array con:
+    //    { "titulo", "descripcion", "fecha" (YYYY-MM-DD),
+    //      "url" (link al artículo en LinkedIn),
+    //      "imagen" (URL de la imagen de portada del artículo) }
+    // 3. Guardá el archivo — se muestra automáticamente más nuevo primero.
+    // ─────────────────────────────────────────────────────
+
+    function formatFecha(fechaStr) {
+      const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      const d = new Date(fechaStr + 'T00:00:00');
+      return meses[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    function crearCardArticulo(art, index) {
+      const badge = index === 0
+        ? `<span style="position:absolute;top:1rem;left:1rem;background:var(--ink);color:var(--bg);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border-radius:99px;">Nuevo</span>`
+        : '';
+
+      return `
+        <a href="${art.url}" target="_blank" rel="noopener"
+           class="article-card reveal"
+           style="text-decoration:none; display:flex; flex-direction:column;">
+
+          <!-- Imagen de portada -->
+          <div style="position:relative; height:200px; overflow:hidden; border-radius:1.5rem 1.5rem 0 0; flex-shrink:0;">
+            <img
+              src="${art.imagen}"
+              alt="${art.titulo}"
+              loading="lazy"
+              style="width:100%; height:100%; object-fit:cover; transition:transform .5s ease;"
+              onmouseover="this.style.transform='scale(1.04)'"
+              onmouseout="this.style.transform='scale(1)'"
+              onerror="this.parentElement.style.background='var(--bg-mid)'; this.style.display='none';"
+            >
+            ${badge}
+          </div>
+
+          <!-- Contenido -->
+          <div style="padding:1.75rem; flex:1; display:flex; flex-direction:column;">
+            <span style="font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--border);">
+              ${formatFecha(art.fecha)}
+            </span>
+            <h3 style="font-weight:700; font-size:.9375rem; line-height:1.4; margin-top:.6rem; margin-bottom:.75rem; color:var(--ink);">
+              ${art.titulo}
+            </h3>
+            <p style="font-size:.8125rem; line-height:1.65; color:var(--ink-soft); flex:1;">
+              ${art.descripcion}
+            </p>
+            <div style="display:flex; align-items:center; gap:.375rem; margin-top:1.25rem; font-size:.6875rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink);">
+              Leer artículo
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    const ARTICULOS = [
+  {
+    "titulo": "Familia en renta: ¿Pagarías para que un actor cumpla el rol que falta en tu familia?",
+    "descripcion": "En Japón existe un servicio donde se puede contratar a alguien para que haga de padre, hijo o pareja. Una pregunta incómoda sobre los vínculos que duelen por su ausencia.",
+    "fecha": "2026-05-18",
+    "url": "https://www.linkedin.com/pulse/familia-en-renta-pagar%25C3%25ADas-para-que-un-actor-cumpla-el-ximena-gonzalez-tzmzf/?trackingId=4t%2BDNNLpSLSjUZ27eubQSQ%3D%3D",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQH_plVVPXeoag/article-cover_image-shrink_720_1280/B4DZ44NbT5I8AQ-/0/1779059505174?e=1781136000&v=beta&t=NwxOxMj0jc2eynjKh-npoZbEDj-Saw0O3_YqURS2lZ8"
+  },
+  {
+    "titulo": "\"Nunca fuiste a ninguno de mis actos\": El eco de la mirada ausente",
+    "descripcion": "Cuando un hijo siente que su presencia no importa, algo se rompe en silencio. Una mirada sobre el impacto emocional de la ausencia parental en los momentos que más cuentan.",
+    "fecha": "2026-05-11",
+    "url": "https://www.linkedin.com/pulse/nunca-fuiste-ninguno-de-mis-actos-el-eco-la-mirada-ausente-gonzalez-0ujze/",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4E12AQF5uQh6SijnaA/article-cover_image-shrink_720_1280/B4EZ4U0H9HJEAI-/0/1778465669709?e=1780531200&v=beta&t=5TPO5SWg_sIvBVxDYy454VhmAboESdThWXW9C8FKXCs"
+  },
+  {
+    "titulo": "\"Mañana tiroteo\": cuando la escuela deja de ser un lugar seguro.",
+    "descripcion": "Los niños ya no llevan solo la mochila a la escuela — también cargan el miedo. Una reflexión sobre lo que sucede cuando el espacio educativo pierde su condición de refugio.",
+    "fecha": "2026-05-04",
+    "url": "https://www.linkedin.com/pulse/ma%C3%B1ana-tiroteo-cuando-la-escuela-deja-de-ser-un-lugar-ximena-gonzalez-tsuwf/",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQH3qlrO3wz0tg/article-cover_image-shrink_720_1280/B4DZ3v1B9oH0AI-/0/1777845152244?e=1780531200&v=beta&t=xGyA9hYwB-fSOKrM4Kfoh-MdgNczS3anEp5kxeqohd4"
+  }
+];
+
+    (function renderArticulos(data) {
+      data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      const grid = document.getElementById('articulos-grid');
+      const top3 = data.slice(0, 3);
+      grid.innerHTML = top3.map((art, i) => crearCardArticulo(art, i)).join('');
+      grid.querySelectorAll('.reveal').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.72, ease:'power3.out',
+          scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
+        });
+      });
+    })(ARTICULOS);
+  </script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Header scroll
+    const nav = document.getElementById('header-nav');
+    ScrollTrigger.create({
+      start: 'top -60',
+      onUpdate: (self) => {
+        if (self.scroll() > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+    });
+
+    // Hero parallax
+    gsap.to('#hero-bg', {
+      yPercent: 18, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    // Hero entrance
+    const ht = gsap.timeline({ delay: 0.1 });
+    ht.from('#hero-eye',   { opacity:0, y:14, duration:0.5,  ease:'power3.out' })
+      .from('#hero-title', { opacity:0, y:40, duration:0.9,  ease:'power3.out' }, '-=0.28')
+      .from('#hero-sub',   { opacity:0, y:24, duration:0.65, ease:'power3.out' }, '-=0.48')
+      .from('#hero-ctas',  { opacity:0, y:18, duration:0.55, ease:'power3.out' }, '-=0.38')
+      .from('#hero-trust', { opacity:0,       duration:0.4,  ease:'power2.out' }, '-=0.18');
+
+    // Scroll reveals
+    gsap.utils.toArray('.reveal').forEach(el => {
+      gsap.to(el, {
+        opacity:1, y:0, duration:0.72, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
+      });
+    });
+    gsap.utils.toArray('.reveal-left').forEach(el => {
+      gsap.to(el, { opacity:1, x:0, duration:0.82, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 89%', toggleActions:'play none none none' }
+      });
+    });
+    gsap.utils.toArray('.reveal-right').forEach(el => {
+      gsap.to(el, { opacity:1, x:0, duration:0.82, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 89%', toggleActions:'play none none none' }
+      });
+    });
+  </script>
+
+</body>
+</html>
