@@ -1022,42 +1022,24 @@
         </a>`;
     }
 
-    const ARTICULOS = [
-  {
-    "titulo": "Familia en renta: ¿Pagarías para que un actor cumpla el rol que falta en tu familia?",
-    "descripcion": "En Japón existe un servicio donde se puede contratar a alguien para que haga de padre, hijo o pareja. Una pregunta incómoda sobre los vínculos que duelen por su ausencia.",
-    "fecha": "2026-05-18",
-    "url": "https://www.linkedin.com/pulse/familia-en-renta-pagar%25C3%25ADas-para-que-un-actor-cumpla-el-ximena-gonzalez-tzmzf/?trackingId=4t%2BDNNLpSLSjUZ27eubQSQ%3D%3D",
-    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQH_plVVPXeoag/article-cover_image-shrink_720_1280/B4DZ44NbT5I8AQ-/0/1779059505174?e=1781136000&v=beta&t=NwxOxMj0jc2eynjKh-npoZbEDj-Saw0O3_YqURS2lZ8"
-  },
-  {
-    "titulo": "\"Nunca fuiste a ninguno de mis actos\": El eco de la mirada ausente",
-    "descripcion": "Cuando un hijo siente que su presencia no importa, algo se rompe en silencio. Una mirada sobre el impacto emocional de la ausencia parental en los momentos que más cuentan.",
-    "fecha": "2026-05-11",
-    "url": "https://www.linkedin.com/pulse/nunca-fuiste-ninguno-de-mis-actos-el-eco-la-mirada-ausente-gonzalez-0ujze/",
-    "imagen": "https://media.licdn.com/dms/image/v2/D4E12AQF5uQh6SijnaA/article-cover_image-shrink_720_1280/B4EZ4U0H9HJEAI-/0/1778465669709?e=1780531200&v=beta&t=5TPO5SWg_sIvBVxDYy454VhmAboESdThWXW9C8FKXCs"
-  },
-  {
-    "titulo": "\"Mañana tiroteo\": cuando la escuela deja de ser un lugar seguro.",
-    "descripcion": "Los niños ya no llevan solo la mochila a la escuela — también cargan el miedo. Una reflexión sobre lo que sucede cuando el espacio educativo pierde su condición de refugio.",
-    "fecha": "2026-05-04",
-    "url": "https://www.linkedin.com/pulse/ma%C3%B1ana-tiroteo-cuando-la-escuela-deja-de-ser-un-lugar-ximena-gonzalez-tsuwf/",
-    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQH3qlrO3wz0tg/article-cover_image-shrink_720_1280/B4DZ3v1B9oH0AI-/0/1777845152244?e=1780531200&v=beta&t=xGyA9hYwB-fSOKrM4Kfoh-MdgNczS3anEp5kxeqohd4"
-  }
-];
-
-    (function renderArticulos(data) {
-      data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-      const grid = document.getElementById('articulos-grid');
-      const top3 = data.slice(0, 3);
-      grid.innerHTML = top3.map((art, i) => crearCardArticulo(art, i)).join('');
-      grid.querySelectorAll('.reveal').forEach(el => {
-        gsap.to(el, {
-          opacity:1, y:0, duration:0.72, ease:'power3.out',
-          scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
+    fetch('articulos.json')
+      .then(r => r.json())
+      .then(data => {
+        data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+        const grid = document.getElementById('articulos-grid');
+        const top3 = data.slice(0, 3);
+        grid.innerHTML = top3.map((art, i) => crearCardArticulo(art, i)).join('');
+        grid.querySelectorAll('.reveal').forEach(el => {
+          gsap.to(el, {
+            opacity:1, y:0, duration:0.72, ease:'power3.out',
+            scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
+          });
         });
+      })
+      .catch(() => {
+        document.getElementById('articulos-grid').innerHTML =
+          '<p style="color:var(--ink-soft);grid-column:1/-1;text-align:center;">No se pudieron cargar los artículos.</p>';
       });
-    })(ARTICULOS);
   </script>
 
   <script>
