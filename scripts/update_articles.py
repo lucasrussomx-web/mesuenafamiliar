@@ -65,9 +65,29 @@ def fetch_metadata(url: str) -> dict:
 
 
 def normalize_url(url: str) -> str:
-    """Devuelve solo scheme+netloc+path, sin parámetros de tracking."""
     p = urlparse(url)
     return f"{p.scheme}://{p.netloc}{p.path}".rstrip("/")
+
+
+HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "web", "index.html")
+
+def _inject_into_html(articles: list) -> None:
+    html_path = os.path.normpath(HTML_PATH)
+    with open(html_path, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    new_array = "const ARTICULOS = " + json.dumps(articles, ensure_ascii=False, indent=2) + ";"
+    import re
+    html = re.sub(
+        r"/\* ARTICULOS_START \*/.*?/\* ARTICULOS_END \*/",
+        f"/* ARTICULOS_START */\n    {new_array}\n    /* ARTICULOS_END */",
+        html,
+        flags=re.DOTALL,
+    )
+
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    print("✓ index.html actualizado")
 
 
 def update_articles(url: str) -> None:
@@ -92,6 +112,7 @@ def update_articles(url: str) -> None:
         json.dump(articles, f, ensure_ascii=False, indent=2)
         f.write("\n")
 
+    _inject_into_html(articles)
     print(f"✓ Artículo agregado: {article['titulo']}")
     print(f"  Fecha:  {article['fecha']}")
     print(f"  Imagen: {article['imagen'][:80]}{'...' if len(article['imagen']) > 80 else ''}")

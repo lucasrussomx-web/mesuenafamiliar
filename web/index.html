@@ -1022,24 +1022,44 @@
         </a>`;
     }
 
-    fetch('articulos.json')
-      .then(r => r.json())
-      .then(data => {
-        data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-        const grid = document.getElementById('articulos-grid');
-        const top3 = data.slice(0, 3);
-        grid.innerHTML = top3.map((art, i) => crearCardArticulo(art, i)).join('');
-        grid.querySelectorAll('.reveal').forEach(el => {
-          gsap.to(el, {
-            opacity:1, y:0, duration:0.72, ease:'power3.out',
-            scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
-          });
+    /* ARTICULOS_START */
+    const ARTICULOS = [
+  {
+    "titulo": "2 de Junio: Día Internacional de Acción por los Trastornos Alimentarios. No es un capricho, es una lucha por la vida.",
+    "descripcion": "El 2 de junio fue el Día Internacional de Acción por los Trastornos Alimentarios. En este día tan especial nos unimos a pacientes, familiares y profesionales de la salud en todo el mundo para visibilizar los Trastornos de la Conducta Alimentaria (TCA).",
+    "fecha": "2026-06-09",
+    "url": "https://www.linkedin.com/pulse/2-de-junio-d%25C3%25ADa-internacional-acci%25C3%25B3n-por-los-es-un-una-ximena-gonzalez-hfbof",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQH84FOKzXCT7Q/article-cover_image-shrink_720_1280/B4DZ6o_UntJ8Ac-/0/1780951632912?e=2147483647&v=beta&t=wLwLAJNFkrwhizjXN0l5nOoQax0xI7Bt2qywT0FN-Is"
+  },
+  {
+    "titulo": "CASO AGOSTINA VEGA: Siete días de búsqueda y un final que pudimos evitar: ¿Qué estamos haciendo mal?",
+    "descripcion": "El reciente desenlace del caso de Agostina Madeleine Vega, la adolescente de 14 años de Córdoba, nos obliga como sociedad a detenernos y reflexionar. Tras una semana de búsqueda incesante, su cuerpo fue hallado sin vida en un descampado de 240 hectáreas en el barrio Ampliación Ferreyra.",
+    "fecha": "2026-06-09",
+    "url": "https://www.linkedin.com/pulse/caso-agostina-vega-siete-d%25C3%25ADas-de-b%25C3%25BAsqueda-y-un-final-que-gonzalez-lmopf",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQG-bP3fR4SPRA/article-cover_image-shrink_720_1280/B4DZ6D3WoIIgAU-/0/1780328787817?e=2147483647&v=beta&t=4AcqzdfsTMXEfbMYusM03y9B6EteWK2e8vzcgMxYMWE"
+  },
+  {
+    "titulo": "Un adolescente se suicida por día en Argentina: El grooming como motor del riesgo suicida y cómo detectarlo a tiempo.",
+    "descripcion": "En los últimos años, el entorno digital ha dejado de ser solo un espacio de recreación para convertirse en un escenario donde se manifiestan nuevas y peligrosas formas de violencia. Hoy debemos hablar de un fenómeno crítico: el grooming y lo que expertos denominan \"cautiverio digital\" o \"secuestro e",
+    "fecha": "2026-06-09",
+    "url": "https://www.linkedin.com/pulse/un-adolescente-se-suicida-por-d%25C3%25ADa-en-argentina-el-como-gonzalez-nmief",
+    "imagen": "https://media.licdn.com/dms/image/v2/D4D12AQHG4tRfihb1Ow/article-cover_image-shrink_720_1280/B4DZ5ld92dJ8AQ-/0/1779818815696?e=2147483647&v=beta&t=d5cLDToh9q4ffBPr-3S2iSzEB76HZWq_euIOggMVAU8"
+  }
+];
+    /* ARTICULOS_END */
+
+    (function renderArticulos(data) {
+      data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      const grid = document.getElementById('articulos-grid');
+      const top3 = data.slice(0, 3);
+      grid.innerHTML = top3.map((art, i) => crearCardArticulo(art, i)).join('');
+      grid.querySelectorAll('.reveal').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.72, ease:'power3.out',
+          scrollTrigger: { trigger:el, start:'top 91%', toggleActions:'play none none none' }
         });
-      })
-      .catch(() => {
-        document.getElementById('articulos-grid').innerHTML =
-          '<p style="color:var(--ink-soft);grid-column:1/-1;text-align:center;">No se pudieron cargar los artículos.</p>';
       });
+    })(ARTICULOS);
   </script>
 
   <script>
