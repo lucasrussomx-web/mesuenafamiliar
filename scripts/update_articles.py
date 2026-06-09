@@ -8,6 +8,7 @@ import json
 import sys
 import os
 from datetime import datetime
+from urllib.parse import urlparse
 
 try:
     import requests
@@ -63,18 +64,26 @@ def fetch_metadata(url: str) -> dict:
     }
 
 
+def normalize_url(url: str) -> str:
+    """Devuelve solo scheme+netloc+path, sin parámetros de tracking."""
+    p = urlparse(url)
+    return f"{p.scheme}://{p.netloc}{p.path}".rstrip("/")
+
+
 def update_articles(url: str) -> None:
     json_path = os.path.normpath(JSON_PATH)
+    clean_url = normalize_url(url)
 
     with open(json_path, "r", encoding="utf-8") as f:
         articles = json.load(f)
 
-    if any(a.get("url") == url for a in articles):
-        print(f"El artículo ya existe en articulos.json: {url}")
+    if any(normalize_url(a.get("url", "")) == clean_url for a in articles):
+        print(f"El artículo ya existe en articulos.json: {clean_url}")
         return
 
-    print(f"Obteniendo metadatos de: {url}")
+    print(f"Obteniendo metadatos de: {clean_url}")
     article = fetch_metadata(url)
+    article["url"] = clean_url
 
     articles.insert(0, article)
     articles = articles[:MAX_ARTICLES]
