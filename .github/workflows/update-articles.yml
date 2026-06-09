@@ -1,6 +1,8 @@
 name: Actualizar artículos de LinkedIn
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       article_url:
@@ -12,6 +14,10 @@ permissions:
   contents: write
   pages: write
   id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   update-and-deploy:
@@ -35,9 +41,11 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Agregar artículo
+        if: github.event_name == 'workflow_dispatch'
         run: python scripts/update_articles.py "${{ inputs.article_url }}"
 
       - name: Confirmar y publicar cambios
+        if: github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
